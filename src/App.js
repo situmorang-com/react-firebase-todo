@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { Button,FormControl, Input, InputLabel, makeStyles, TextField } from '@material-ui/core';
+import { Button,FormControl, IconButton, Input, InputLabel, Paper, TextField, ThemeProvider, Typography } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import CloudOffIcon from '@material-ui/icons/CloudOff';
+import { createMuiTheme, makeStyles } from "@material-ui/core/styles";
+// import CloudOffIcon from '@material-ui/icons/CloudOff';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import Todo from './Todo';
 import db from './firebase';
 import firebase from 'firebase';
+import Brightness3Icon from "@material-ui/icons/Brightness3";
+import Brightness7Icon from "@material-ui/icons/Brightness7";
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -25,7 +29,11 @@ function App() {
 	// const [ username, setInput ] = useState('');
 	const [checked, setChecked] = useState([1]);
 
+	const [theme, setTheme] = useState(true);
 	const classes = useStyles();
+	const icon = !theme ? <Brightness7Icon /> : <Brightness3Icon />;
+	const appliedTheme = createMuiTheme(theme ? light : dark);
+  
 
 	//when the app loads, we need to listen to database and fetch new todos as they get added/removed
 	useEffect(() => {
@@ -55,78 +63,96 @@ function App() {
 	};
 
 	return (
-		// <div align="center" className="App">
-		<div align="center" className={`${App} ${classes.root}`}>
-			<h1 >CheckList</h1>
-			<form>
+		<ThemeProvider theme={appliedTheme}>
+			<Paper>
+			{/* <div align="center" className={`${App} ${classes.root}`}> */}
+			<div align="center" className="App">
+				<IconButton
+					edge="end"
+					color="inherit"
+					aria-label="mode"
+					onClick={() => setTheme(!theme)}
+				>
+					{icon}
+				</IconButton>
+				<Typography>
+					Click on {!theme ? "Sun" : "Moon"} Icon to change to{" "}
+					{!theme ? "Light" : "Dark"} theme
+				</Typography>
+				<h1 >CheckList</h1>
+				<form>
 
-				<FormControl>
-					{/* <InputLabel variant="outlined" color='primary'> ✅  here to add</InputLabel>
-					<Input value={input} onChange={(event) => setInput(event.target.value)}/> */}
-					<TextField
-						id="outlined-full-width"
-						label="✅ ⦿here to add"
-						style={{ margin: 7 }}
-						// placeholder="Placeholder"
-						// helperText="Full width!"
-						// fullWidth
-						// margin="normal"
-						// InputLabelProps={{
-						// 	shrink: true,
-						// }}
-						multiline
-						variant="outlined"
-						value={input}
-						onChange={(event) => setInput(event.target.value)}
-					/>
+					<FormControl>
+						{/* <InputLabel variant="outlined" color='primary'> ✅  here to add</InputLabel>
+						<Input value={input} onChange={(event) => setInput(event.target.value)}/> */}
+						<TextField
+							id="outlined-full-width"
+							label="✅ ⦿here to add"
+							style={{ margin: 7 }}
+							// placeholder="Placeholder"
+							// helperText="Full width!"
+							// fullWidth
+							// margin="normal"
+							// InputLabelProps={{
+							// 	shrink: true,
+							// }}
+							multiline
+							variant="outlined"
+							value={input}
+							onChange={(event) => setInput(event.target.value)}
+						/>
 
-					{/* <InputLabel style={{ marginRight:50 }}>User</InputLabel> */}
-					<Input
-						id="input-with-icon-adornment"
-						placeholder="user name"
-						style={{ margin: 7 }}
-						// defaultValue="private"
-						// input={username}
-						value={username}
-						startAdornment={
-							<InputAdornment position="start">
-							<AccountCircle />
-							</InputAdornment>
-						}
-						onChange={(event) => setUsername(event.target.value)}
-       				/>
+						{/* <InputLabel style={{ marginRight:50 }}>User</InputLabel> */}
+						<Input
+							id="input-with-icon-adornment"
+							placeholder="user name"
+							style={{ margin: 7 }}
+							// defaultValue="private"
+							// input={username}
+							value={username}
+							startAdornment={
+								<InputAdornment position="start">
+								<AccountCircle />
+								</InputAdornment>
+							}
+							onChange={(event) => setUsername(event.target.value)}
+						/>
 
-					<Button 
-						disabled={!input} 
-						type="submit" 
-						onClick={addTodo} 
-						variant="contained" 
-						color="primary"
-					>
-						Add
-					</Button>
-				</FormControl>
+						<Button 
+							disabled={!input} 
+							type="submit" 
+							onClick={addTodo} 
+							variant="contained" 
+							color="primary"
+						>
+							Add
+						</Button>
+					</FormControl>
 
 
-			</form>
+				</form>
 
-			<ul 
-			// align="center"
-			// justify = "center"
-			// alignItems = "center"
-			// mx="auto" 
-			// style={{ margin: 7 }}
-			>{todos.map(todo => (
-				<Todo todo={todo}/>
-			))}
-			</ul>
+				<ul>
+					{todos.map(todo => (
+						<Todo todo={todo}/>
+					))}
+				</ul>
 
-			{/* window.addEventListener('offline', function(e) {
-			console.log('offline')});
-
-			window.addEventListener('online', function(e) { console.log('online')}); */}
 		</div>
+		</Paper>
+    </ThemeProvider>
 	);
 }
+
+export const light = {
+	palette: {
+	  type: "light"
+	}
+  };
+  export const dark = {
+	palette: {
+	  type: "dark"
+	}
+  };
 
 export default App;

@@ -35,7 +35,7 @@ function Todo(props) {
       setChecked(newChecked);
     };
     return (
-        <div lassName={classes.root}>
+        <div className={classes.root}>
 
             <List>
                 <Grid container>
